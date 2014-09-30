@@ -36,7 +36,7 @@ get '/movie/:title' do
   movie = Movie.where(title: params['title']).first
 
   cast_data_for_role = Proc.new do |query, role|
-    query.pluck(:person, :rel).map {|person, rel| {name: person.name, roles: rel.try(:roles) || [], job: role} }
+    query.pluck(:person, :rel).map do |person, rel| { name: person.name, roles: rel.props[:roles] || [], job: role}
   end
 
   cast_data = cast_data_for_role.call(movie.actors(:person, :rel), :acted) + cast_data_for_role.call(movie.directors(:person, :rel), :directed)
